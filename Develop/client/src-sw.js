@@ -27,4 +27,19 @@ warmStrategyCache({
 registerRoute(({ request }) => request.mode === 'navigate', pageCache);
 
 // TODO: Implement asset caching
-registerRoute();
+registerRoute(
+  // Match common image formats
+/\.(png|jpg|jpeg|webp|gif|svg)$/,
+// Use CacheFirst strategy with cache name 'images-cache'
+new CacheFirst({
+  cacheName: 'images-cache',
+  plugins: [
+    new CacheableResponsePlugin({
+      statuses: [0, 200],
+    }),
+    new ExpirationPlugin({
+      maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+    }),
+  ],
+})
+);
